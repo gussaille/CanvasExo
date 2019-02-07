@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Template</title>
+	<title>Exercices Canvas</title>
 </head>
 <body>
 	<canvas width="800px" height="600px"></canvas>
@@ -40,17 +40,34 @@ function loop(){
 	window.requestAnimationFrame(loop);
 }
 
-let posX = 0;// position en x du rectangle noir
-let direction = 1;
+let position = {x:0, y:0}; // position en y du petit rectangle 
+let direction = {x:1, y:0};
+let position2 = {x:32, y:32};
+let direction2 = {x:1, y: 0};
 
 function input(){
 
 }
 
 function animate(){ // lieu des algorithmes
-	if( posX == 800) direction = -1;
-	if( posX == 0) direction = 1;
-	posX = posX + direction;
+	if( position.x == (800 - 32)) {
+		direction.x = 0;
+		direction.y = 1;
+	}
+	if(position.x == 0) direction.x = 1;
+
+	// deuxième Bloc en mouvement
+	if(position2.x == (800 - 32 -32)) {// taille du wrapper - 2 tailles de blocs
+		direction2.x = 0;
+		direction2.y = 1;
+	}
+
+	if(position2.x == 0) direction2.x = 1;
+
+	position.x = position.x + direction.x;
+	position.y = position.y + direction.y;
+	position2.x = position2.x + direction2.x;
+	position2.y = position2.y + direction2.y;
 }
 
 function render(){
@@ -58,8 +75,12 @@ function render(){
 	context.fillStyle ="#9F39B1";
 	context.fillRect(0, 0, 800, 600);
 
+	//couleur du petit rectangle
 	context.fillStyle ="#471350";
-	context.fillRect(posX, 0, 20, 20);	
+	context.fillRect(position.x, position.y , 32, 32);
+
+	context.fillStyle = "#C098D4";
+	context.fillRect(position2.x, position2.y, 32,32);
 }
 loop();
 
