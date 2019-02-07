@@ -1,1 +1,71 @@
-test
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Template</title>
+</head>
+<body>
+	<canvas width="800px" height="600px"></canvas>
+
+<script>
+
+// trouver le contexte
+	let context = document.getElementsByTagName("canvas")[0].getContext("2d");
+
+// // //régler le style du dessin
+// 	context.fillStyle = '#FCC558'; // spécifier la couleur
+
+// // // utiliser les fonctions du contexte
+// 	context.fillRect(0, 0, 800, 600); // spécifier la position et la taille du rectangle
+
+
+// //régler le style du dessin
+// 	context.fillStyle = "#0A4060";
+
+// // // utiliser les fonctions du contexte
+// 	context.fillRect(0, 0 , 400, 300);
+
+// context.strokeStyle = "#9F39B1";
+// context.strokeRect( 0, 0, 800, 600);
+
+function loop(){
+	// récupérer les informations d'entrées
+	input();
+
+	// agir en conséquences input sur les variables
+	animate();
+
+	// afficher à l'écran
+	render();
+	window.requestAnimationFrame(loop);
+}
+
+let posX = 0;// position en x du rectangle noir
+let direction = 1;
+
+function input(){
+
+}
+
+function animate(){ // lieu des algorithmes
+	if( posX == 800) direction = -1;
+	if( posX == 0) direction = 1;
+	posX = posX + direction;
+}
+
+function render(){
+	// couleur de fond
+	context.fillStyle ="#9F39B1";
+	context.fillRect(0, 0, 800, 600);
+
+	context.fillStyle ="#471350";
+	context.fillRect(posX, 0, 20, 20);	
+}
+loop();
+
+
+</script>
+
+</body>
+</html>
+
