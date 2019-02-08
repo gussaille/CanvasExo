@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Exercices Canvas</title>
+</head>
+<body>
+	<canvas width="800px" height="600px"></canvas>
+
+<script>
+	// trouver le "context"
+	let context = document.getElementsByTagName("canvas")[0].getContext("2d");	
+	function Loop(){
+		//récupérer des informations d'entrée
+		input();
+		//agir en conséquence des input sur les variables
+		animate();
+		//afficher à l'écran les éléments
+		render();
+		frameCounter++;
+		window.requestAnimationFrame(Loop);
+	}	
+	//position en X du rectangle noir
+	
+	function CreateCarre(i){
+		let Carre = {
+			position  	: {x:0+i*10,y:0+i*10},
+			direction 	: {x:1,y:0},
+			
+			animate	    : function (){
+			
+				//droite vers bas
+				if(Carre.position.x == (600-(10*(i+1)))){
+					Carre.direction.x = 0;
+					Carre.direction.y = 1;
+				}
+				
+				//bas vers gauche
+				if(Carre.position.y == (600-(10*(i+1)))){
+					Carre.direction.x = -1;
+					Carre.direction.y = 0;
+				}
+						
+				//gauche vers haut
+				if((Carre.position.x == 0+10*i) && (Carre.position.y == (600-(10*(i+1))))){
+					Carre.direction.x = 0;
+					Carre.direction.y = -1;
+				}
+				
+				//haut vers droite
+				if((Carre.position.y == 0+10*i) && (Carre.position.x == 0+10*i)){
+					Carre.direction.x = 1;
+					Carre.direction.y = 0;
+				}
+							
+				Carre.position.x = Carre.position.x + Carre.direction.x;	
+				Carre.position.y = Carre.position.y + Carre.direction.y;
+			},
+			
+			render		: function (){
+				context.fillStyle = "#000000";
+				context.fillRect(Carre.position.x,Carre.position.y, 10, 10);
+			}
+		};
+		
+		return Carre;
+	}
+	
+	//global
+	let t = [];
+	let numCarre = 2/2;
+	let img = new Image();
+	img.src = "dungeon.png";
+	// 0 à 3
+	let step = 0;
+	let frameCounter = 0;
+	let room = [
+		[1,1,1,1,1,1],
+		[1,0,0,0,0,1],
+		[1,0,0,0,0,1],
+		[1,0,0,0,0,1],
+		[1,1,1,1,1,1]
+	];
+	
+	function Start(){
+		
+		for(let i = 0; i < numCarre; i++){
+			t.push(CreateCarre(i));
+		}
+		
+		Loop();
+	}	
+	function input(){
+	}	
+	function animate(){
+		for(let i = 0; i < numCarre; i++){
+			t[i].animate();
+		}
+	}
+
+	function render(){
+		//couleur de fond
+		context.fillStyle = "#ffb3ff";
+		context.fillRect(0,0,800,600)
+		
+		for(let i = 0; i < numCarre; i++){
+			t[i].render();
+		}
+		
+		//affichage de l'image
+		let j = 23 + step,
+			k = 1 ,
+			girlposX = 12 + step,
+			girlposY= 1 ,
+			swordposX = 18 ,
+			swordposY = 8;
+
+		
+		//console.log(step);
+	
+
+		for(let i = 0; i < room[0].length; i++){
+			if(room[0][i] == 1){
+				context.drawImage(img,16*2,16*1,16,16,16*i,0,16,16);
+			}else{
+				context.drawImage(img,16*1,16*4,16,16,16*i,0,16,16);
+			}
+		}
+		for(let i = 0; i < room[1].length; i++){
+			if(room[1][i] == 1){
+				context.drawImage(img,16*5,16*1,16,16,16*i,16,16,16);
+			}else{
+				context.drawImage(img,16*1,16*6,16,16,16*i,16,16,16);
+			}
+		}
+		for(let i = 0; i < room[2].length; i++){
+			if(room[2][i] == 1){
+				context.drawImage(img,16*2,16*1,16,16,16*i,32,16,16);
+			}else{
+				context.drawImage(img,16*2,16*4,16*2,16*1,16*i,32,16,16);
+			}
+		}
+		for(let i = 0; i < room[3].length; i++){
+			if(room[3][i] == 1){
+				context.drawImage(img,16*2,16*2,16,16,16*i,48,16,16);
+			}else{
+				context.drawImage(img,16*2,16*5,16,16,16*i,48,16,16);
+			}
+		}
+		for(let i = 0; i < room[4].length; i++){
+			if(room[4][i] == 1){
+				context.drawImage(img,16*2,16*1,16,16,16*i,64,16,16);
+			}else{
+				context.drawImage(img,16*1,16*4,16,16,16*i,64,16,16);
+			}
+		}
+
+		context.drawImage(img,16*j,16*k,16,16,32,32,16,16);
+		context.drawImage(img,16*j,16*k,16,16,32,32,16,16);
+		context.drawImage(img,16*girlposX,16*girlposY,16,16,54,32,16,16);
+		context.drawImage(img,16*swordposX,16*swordposY,16,16,39,30,16,16);
+
+		// sword movement n°1
+		context.save();
+		context.rotate(0.4);
+	 	context.translate(10,0.5);
+		context.drawImage(img,16*swordposX,16*swordposY,16,16,45,6,16,16);
+		context.restore();
+
+		//sword movement N°2
+		context.save();
+		context.rotate(1);
+	 	context.translate(10,0.5);
+		context.drawImage(img,16*swordposX,16*swordposY,16,16,48,-32,16,16);
+		context.restore();
+
+		// for (let i = 0; i < room.length; i++){
+		// 	context.drawImage(img,16*1,16*1,16,16,16*i,0,16,16);
+		// 	context.drawImage(img,16*2,16*1,16,16,0,16*i,16,16);
+		// 	context.drawImage(img,16*2,16*1,16,16,0*i,16,16,16);
+		// }
+	
+		if(frameCounter%25 == 0) step++;
+		if(step == 4) step = 0;
+	}	
+	Start();
+</script>
+
+</body>
+</html>
+

@@ -50,20 +50,44 @@ function input(){
 }
 
 function animate(){ // lieu des algorithmes
+	//1er carré : décalage vers le bas une fois arrivée à droite
 	if( position.x == (800 - 32)) {
 		direction.x = 0;
 		direction.y = 1;
 	}
-	if(position.x == 0) direction.x = 1;
-
+	// 1er carré: décalage vers la gauche une fois arrivée en bas
+	if( position.y == (600 - 32)) {
+		direction.x = -1;
+		direction.y = 0;
+	}
+	//1er carré : décalage vers le haut une fois arrivée à gauche
+	if(position.y ==(600 - 32) && position.x == 0){
+		direction.y = -1;
+		direction.x=0;
+	}
+	if(position.y == 0 && position.x ==0){
+		direction.y = 0;
+		direction.x=1;
+	}
 	// deuxième Bloc en mouvement
 	if(position2.x == (800 - 32 -32)) {// taille du wrapper - 2 tailles de blocs
 		direction2.x = 0;
 		direction2.y = 1;
 	}
 
-	if(position2.x == 0) direction2.x = 1;
-
+	if( position2.y == (600 - 32- 32)) {
+		direction2.x = -1;
+		direction2.y = 0;
+	}
+	
+	if(position2.y ==(600 - 32 -32) && position2.x == 0){
+		direction2.y = -1;
+		direction2.x=0;
+	}
+	if(position2.y == 0 && position2.x ==0){
+		direction2.y = 0;
+		direction2.x=1;
+	}
 	position.x = position.x + direction.x;
 	position.y = position.y + direction.y;
 	position2.x = position2.x + direction2.x;
@@ -81,9 +105,92 @@ function render(){
 
 	context.fillStyle = "#C098D4";
 	context.fillRect(position2.x, position2.y, 32,32);
+
+	context.fillStyle = "#0EDBB7";
+	context.fillRect(position2.x, position2.y, 32,32);
 }
 loop();
 
+	// // trouver le "context"
+	// let context = document.getElementsByTagName("canvas")[0].getContext("2d");	
+	// function Loop(){
+	// 	//récupérer des informations d'entrée
+	// 	input();
+	// 	//agir en conséquence des input sur les variables
+	// 	animate();
+	// 	//afficher à l'écran les éléments
+	// 	render();
+	// 	window.requestAnimationFrame(Loop);
+	// }	
+	// //position en X du rectangle noir
+	
+	// function CreateCarre(i){
+	// 	let Carre = {
+	// 		position  	: {x:0+i*10,y:0+i*10},
+	// 		direction 	: {x:1,y:0},
+			
+	// 		animate	    : function (){
+			
+	// 			//droite vers bas
+	// 			if(Carre.position.x == (600-(10*(i+1)))){
+	// 				Carre.direction.x = 0;
+	// 				Carre.direction.y = 1;
+	// 			}
+				
+	// 			//bas vers gauche
+	// 			if(Carre.position.y == (600-(10*(i+1)))){
+	// 				Carre.direction.x = -1;
+	// 				Carre.direction.y = 0;
+	// 			}
+						
+	// 			//gauche vers haut
+	// 			if((Carre.position.x == 0+10*i) && (Carre.position.y == (600-(10*(i+1))))){
+	// 				Carre.direction.x = 0;
+	// 				Carre.direction.y = -1;
+	// 			}
+				
+	// 			//haut vers droite
+	// 			if((Carre.position.y == 0+10*i) && (Carre.position.x == 0+10*i)){
+	// 				Carre.direction.x = 1;
+	// 				Carre.direction.y = 0;
+	// 			}
+							
+	// 			Carre.position.x = Carre.position.x + Carre.direction.x;	
+	// 			Carre.position.y = Carre.position.y + Carre.direction.y;
+	// 		},
+			
+	// 		render		: function (){
+	// 			context.fillStyle = "#000000";
+	// 			context.fillRect(Carre.position.x,Carre.position.y, 10, 10);
+	// 		}
+	// 	};
+		
+	// 	return Carre;
+	// }
+	
+	// let t = [];
+	// let numCarre = 58/2;
+	// for(let i = 0; i < numCarre; i++){
+	// 	t.push(CreateCarre(i));
+	// }
+	
+	// function input(){
+	// }	
+	// function animate(){
+	// 	for(let i = 0; i < numCarre; i++){
+	// 		t[i].animate();
+	// 	}
+	// }
+	// function render(){
+	// 	//couleur de fond
+	// 	context.fillStyle = "#ffb3ff";
+	// 	context.fillRect(0,0,800,600)
+		
+	// 	for(let i = 0; i < numCarre; i++){
+	// 		t[i].render();
+	// 	}
+	// }	
+	// Loop();
 
 </script>
 
