@@ -5,19 +5,21 @@
 	<title>Exercices Canvas</title>
 </head>
 <body>
-	<canvas width="800px" height="600px"></canvas>
+	<canvas width="400px" height="300px"></canvas>
 
 <script>
 	// trouver le "context"
 	let context = document.getElementsByTagName("canvas")[0].getContext("2d");	
 	function Loop(){
 		//récupérer des informations d'entrée
-		input();
+
 		//agir en conséquence des input sur les variables
 		animate();
 		//afficher à l'écran les éléments
 		render();
+		input();
 		frameCounter++;
+
 		window.requestAnimationFrame(Loop);
 	}	
 	//position en X du rectangle noir
@@ -74,13 +76,25 @@
 	// 0 à 3
 	let step = 0;
 	let frameCounter = 0;
-	let room = [
-		[1,1,1,1,1,1],
-		[1,0,0,0,0,1],
-		[1,0,0,0,0,1],
-		[1,0,0,0,0,1],
-		[1,1,1,1,1,1]
+	let room = [ // fond de la pièce
+		[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+		[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+		[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+		[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+		[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 	];
+
+	let inputDroite;
+	let inputGauche;
+	let inputHaut;
+	let inputBas;
+
+	let girl = {
+		position : { x:34, y:34 },
+	}
+	let ecuyer = {
+		position : { x:54, y:34 },
+	}
 	
 	function Start(){
 		
@@ -90,14 +104,60 @@
 		
 		Loop();
 	}	
+	// function input(){
+	// 	// Les events
+	// 	// mettre à true si on appuie sur la flèche de droite
+	// 	document.onkeydown = (e) =>{ //détecte le nombre de clic sur une touche du clavier
+	// 		console.log("push on "+ e.code);// détecte la touche cliquée
+
+	// 		if(e.code == "ArrowRight"){
+	// 			inputDroite = true;
+	// 		}
+	// 	}
+	// }	
 	function input(){
+		inputDroite = false;
+		inputGauche = false;
+		inputHaut = false;
+		inputBas = false;
+		
+		// mettre à true si on appuie sur la flèche de droite
+		document.onkeydown = (e) => {
+			if(e.code == "ArrowRight"){
+				inputDroite = true;
+			}
+			if(e.code == "ArrowLeft"){
+				inputGauche = true;
+			}
+			if(e.code == "ArrowUp"){
+				inputHaut = true;
+			}
+			if(e.code == "ArrowDown"){
+				inputBas = true;
+			}
+		};
 	}	
 	function animate(){
 		for(let i = 0; i < numCarre; i++){
 			t[i].animate();
 		}
+		if(inputDroite){
+			girl.position.x += 5;
+			ecuyer.position.x += 5;
+		}
+		if(inputGauche){
+			girl.position.x -= 5;
+			ecuyer.position.x -= 5;
+		}
+		if(inputHaut){
+			girl.position.y -= 5;
+			ecuyer.position.y -= 5;
+		}
+		if(inputBas){
+			girl.position.y += 5;
+			ecuyer.position.y += 5;
+		}
 	}
-
 	function render(){
 		//couleur de fond
 		context.fillStyle = "#ffb3ff";
@@ -108,13 +168,17 @@
 		}
 		
 		//affichage de l'image
-		let j = 23 + step,
-			k = 1 ,
-			girlposX = 12 + step,
-			girlposY= 1 ,
-			swordposX = 18 ,
-			swordposY = 8;
+		let ecuyerX = 23 + step,
+			ecuyerY = 1 ,
 
+			girlposX = 12 + step,
+			girlposY= 1,
+
+			swordposX = 18 ,
+			swordposY = 8,
+
+			monsterX = 23 + step,
+			monsterY = 19;
 		
 		//console.log(step);
 	
@@ -155,25 +219,26 @@
 			}
 		}
 
-		context.drawImage(img,16*j,16*k,16,16,32,32,16,16);
-		context.drawImage(img,16*j,16*k,16,16,32,32,16,16);
-		context.drawImage(img,16*girlposX,16*girlposY,16,16,54,32,16,16);
-		context.drawImage(img,16*swordposX,16*swordposY,16,16,39,30,16,16);
+		context.drawImage(img,16*ecuyerX,16*ecuyerY,16,16,ecuyer.position.x,ecuyer.position.y,16,16);
+		context.drawImage(img,16*girlposX,16*girlposY,16,16,girl.position.x, girl.position.y,16,16);
+		context.drawImage(img,16*monsterX,16*monsterY,16,16,168,32,16,16);
+		context.drawImage(img,16*swordposX,16*swordposY,16,16,ecuyer.position.x+7,ecuyer.position.y-2,16,16);
 
 		// sword movement n°1
-		context.save();
-		context.rotate(0.4);
-	 	context.translate(10,0.5);
-		context.drawImage(img,16*swordposX,16*swordposY,16,16,45,6,16,16);
-		context.restore();
+		// context.save();
+		// context.rotate(0.4);
+	 // 	context.translate(10,0.5);
+		// context.drawImage(img,16*swordposX,16*swordposY,16,16,45,6,16,16);
+		// context.restore();
 
-		//sword movement N°2
-		context.save();
-		context.rotate(1);
-	 	context.translate(10,0.5);
-		context.drawImage(img,16*swordposX,16*swordposY,16,16,48,-32,16,16);
-		context.restore();
+		// //sword movement N°2
+		// context.save();
+		// context.rotate(1);
+	 // 	context.translate(10,0.5);
+		// context.drawImage(img,16*swordposX,16*swordposY,16,16,48,-32,16,16);
+		// context.restore();
 
+	
 		// for (let i = 0; i < room.length; i++){
 		// 	context.drawImage(img,16*1,16*1,16,16,16*i,0,16,16);
 		// 	context.drawImage(img,16*2,16*1,16,16,0,16*i,16,16);

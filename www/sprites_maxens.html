@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Exercices Canvas</title>
+</head>
+<body>
+	<canvas width="800px" height="600px"></canvas>
+
+<script>
+	// trouver le "context"
+	let context = document.getElementsByTagName("canvas")[0].getContext("2d");	
+	function Loop(){
+	
+		//agir en conséquence des input sur les variables
+		animate();
+		//afficher à l'écran les éléments
+		render();
+		//input gérés à la fin pour éviter un bug
+		input();
+		frameCounter++;
+		//récupérer des informations d'entrée
+		window.requestAnimationFrame(Loop);
+	}	
+	//position en X du rectangle noir
+	
+	function CreateCarre(i){
+		let Carre = {
+			position  	: {x:0+i*10,y:0+i*10},
+			direction 	: {x:1,y:0},
+			
+			animate	    : function (){
+			
+				//droite vers bas
+				if(Carre.position.x == (600-(10*(i+1)))){
+					Carre.direction.x = 0;
+					Carre.direction.y = 1;
+				}
+				
+				//bas vers gauche
+				if(Carre.position.y == (600-(10*(i+1)))){
+					Carre.direction.x = -1;
+					Carre.direction.y = 0;
+				}
+						
+				//gauche vers haut
+				if((Carre.position.x == 0+10*i) && (Carre.position.y == (600-(10*(i+1))))){
+					Carre.direction.x = 0;
+					Carre.direction.y = -1;
+				}
+				
+				//haut vers droite
+				if((Carre.position.y == 0+10*i) && (Carre.position.x == 0+10*i)){
+					Carre.direction.x = 1;
+					Carre.direction.y = 0;
+				}
+							
+				Carre.position.x = Carre.position.x + Carre.direction.x;	
+				Carre.position.y = Carre.position.y + Carre.direction.y;
+			},
+			
+			render		: function (){
+				context.fillStyle = "#000000";
+				context.fillRect(Carre.position.x,Carre.position.y, 10, 10);
+			}
+		};
+		
+		return Carre;
+	}
+	
+	//global
+	let t = [];
+	let numCarre = 2/2;
+	let img = new Image();
+	img.src = "0x72_DungeonTilesetII_v1.1.png";
+	// 0 à 3
+	let step = 0;
+	let frameCounter = 0;
+	
+	//fond de la piècce
+	let room = [
+		[1,1,1,1,1],
+		[1,0,0,0,1],
+		[1,0,3,0,1],
+		[1,0,0,0,1],
+		[1,1,1,1,1]
+	];
+	
+	//superposition sur la pièce
+	let room2 = [
+		[,,2,,],
+		[,,2,,],
+		[,,"base du pilier",,],
+		[,,,,],
+		[,,,,]
+	];
+	//1 => base du pilier
+	//2 => corps du pilier
+	let inputDroite;
+	let monstre = {
+		position : {x : 0,y : 0}
+	}
+	
+	function Start(){
+		
+		for(let i = 0; i < numCarre; i++){
+			t.push(CreateCarre(i));
+		}
+		
+		Loop();
+	}	
+	function input(){
+		inputDroite = false;
+		
+		// mettre à true si on appuie sur la flèche de droite
+		document.onkeydown = (e) => {
+			if(e.code == "ArrowRight"){
+				inputDroite = true;
+			}
+		};
+	}	
+	function animate(){
+		for(let i = 0; i < numCarre; i++){
+			t[i].animate();
+		}
+		
+		if(inputDroite){
+			console.log("touche droite");
+			monstre.position.x += 5;
+		}
+	}
+	function render(){
+		//couleur de fond
+		context.fillStyle = "#ffb3ff";
+		context.fillRect(0,0,800,600)
+		
+		//affichage de l'image
+		let j = 23 + step,
+			k = 1;
+	
+		
+		//affichage du fond
+		for(let m = 0; m < room.length; m++){
+			for(let i = 0; i < room[m].length; i++){
+				
+				//point pour la découpe
+				let clipPoint = {x : 0, y : 0};
+				
+				switch (room[m][i]){
+					case 1 	:
+						//mur
+						clipPoint = { x : 16*2, y : 16*1 }
+						break;
+					case 3 	:
+						//sol fissuré
+						clipPoint = { x : 16*2, y : 16*4 }
+						break;
+					default :
+						//sol normal
+						clipPoint = { x : 16*1, y : 16*4 }
+				}
+				
+				context.drawImage(img,clipPoint.x,clipPoint.y,16,16,16*i,16*m,16,16);
+			}
+		}
+		//affichage de la superposition
+		for(let m = 0; m < room2.length; m++){
+			for(let i = 0; i < room2[m].length; i++){
+				
+				//point pour la découpe
+				let clipPoint = {x : 0, y : 0};
+				
+				switch (room2[m][i]){
+					case "base du pilier" 	:
+						//pilier base
+						clipPoint = { x : 16*5, y : 16*7 }
+						break;
+					case 2 	:
+						//pilier corps
+						clipPoint = { x : 16*5, y : 16*6 }
+						break;
+					default :
+						//rien
+						clipPoint = {x : 0, y : 0};
+				}
+				
+				context.drawImage(img,clipPoint.x,clipPoint.y,16,16,16*i,16*m,16,16);
+			}
+		}
+		
+		//console.log(step);
+		context.drawImage(img,16*j,16*k,16,16,monstre.position.x,monstre.position.y,16,16);
+		
+		if(frameCounter%25 == 0) step++;
+		if(step == 4) step = 0;
+	}	
+	Start();
+</script>
